@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MASTER JIRO • Owned Sluts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    .logo-header {
+      font-size: 2.8rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #a855f7, #eab308);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+   
+    .hero-bg {
+      background-image: linear-gradient(rgba(0,0,0,0.65), rgba(75,0,130,0.75)),
+                        url('pic2.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .tag {
+      display: inline-block;
+      background: #6b21a8;
+      color: white;
+      font-size: 0.75rem;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      margin: 2px;
+    }
+    .delete-btn {
+      opacity: 0;
+      transition: all 0.2s;
+    }
+    .card:hover .delete-btn {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-black text-white">
+
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" class="fixed inset-0 bg-black/95 z-[400] flex items-center justify-center">
+    <div class="bg-zinc-900 rounded-3xl w-full max-w-md mx-4 p-10 border border-purple-700">
+      <h1 class="text-4xl font-black text-center mb-8 text-purple-400">MASTER JIRO'S DOMAIN</h1>
+      <div class="space-y-6">
+        <input id="username" type="text" placeholder="Username" 
+               class="w-full bg-zinc-800 border border-purple-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-purple-500">
+        <input id="password" type="password" placeholder="Password" 
+               class="w-full bg-zinc-800 border border-purple-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-purple-500">
+        
+        <button onclick="login()" 
+                class="w-full py-5 bg-gradient-to-r from-purple-600 to-amber-500 text-black font-bold rounded-2xl hover:opacity-90 transition">
+          ENTER THE DOMAIN
+        </button>
+
+        <p class="text-center text-xs text-gray-500 mt-4">
+          Admin Login: <span class="text-purple-400 font-mono">admin / masterjiro</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROLE MODAL -->
+  <div id="roleModal" class="hidden fixed inset-0 bg-black/95 z-[200] flex items-center justify-center">
+    <div class="text-center max-w-md px-8 w-full">
+      <h1 class="text-5xl font-black mb-8 text-purple-400">MASTER JIRO'S DOMAIN</h1>
+      <p class="text-2xl mb-10">Are you a Sub or a Dom?</p>
+      <div class="grid grid-cols-2 gap-6">
+        <button onclick="selectRole('sub')" class="py-8 bg-gradient-to-b from-purple-700 to-purple-900 hover:from-purple-600 rounded-3xl text-2xl font-bold transition duration-300 transform hover:scale-105 cursor-pointer">
+          SUB
+        </button>
+        <button onclick="selectRole('dom')" class="py-8 bg-cover bg-center rounded-3xl text-2xl font-bold transition duration-300 transform hover:scale-105 border border-zinc-700 hover:border-purple-500 shadow-xl cursor-pointer">
+          DOM
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOM REJECTION -->
+  <div id="domRejection" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-cover bg-center"
+       style="background-image: linear-gradient(rgba(0,0,0,0.88), rgba(153,0,0,0.75)), url('pics1.png');">
+    <div class="text-center max-w-lg px-8">
+      <h2 class="text-6xl font-black text-red-500 mb-6">NO DOMS ALLOWED</h2>
+      <p class="text-3xl mb-8 text-red-300">Aside from Master Jiro...</p>
+      <p class="text-5xl font-bold text-yellow-400 mb-12">"You Cuck"</p>
+      <button onclick="backToRole()" class="mt-8 px-12 py-5 border-2 border-red-500/70 hover:bg-red-500/20 rounded-full text-xl font-semibold transition cursor-pointer">
+        Go Back
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN SITE -->
+  <div id="mainSite" class="hidden">
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-lg border-b border-purple-900 py-6">
+      <div class="max-w-screen-2xl mx-auto px-8 flex items-center justify-between">
+        <a href="https://x.com/bratdaddyjiro" target="_blank" class="flex items-center gap-3 hover:opacity-80 transition">
+          <h1 class="logo-header">MASTER JIRO</h1>
+          <i class="fa-brands fa-x-twitter text-3xl"></i>
+        </a>
+       
+        <div class="flex items-center gap-4">
+          <button onclick="showFavorites()" class="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 rounded-full flex items-center gap-2 cursor-pointer transition">
+            <i class="fa-solid fa-star text-yellow-400"></i>
+            <span>Favorites</span>
+          </button>
+
+          <button onclick="showAdminPanel()" id="adminBtn" class="hidden px-6 py-3 bg-red-600 hover:bg-red-700 rounded-full flex items-center gap-2 cursor-pointer transition">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>ADMIN</span>
+          </button>
+
+          <button onclick="showUploadModal()" class="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-amber-500 text-black font-bold rounded-full cursor-pointer hover:opacity-90 transition">
+            <i class="fa-solid fa-upload"></i>
+            <span>UPLOAD</span>
+          </button>
+
+          <button onclick="logout()" class="px-5 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-full cursor-pointer transition">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero-bg h-screen flex items-center relative pt-20">
+      <div class="max-w-screen-2xl mx-auto px-8 text-center w-full">
+        <h2 class="text-7xl md:text-8xl font-black leading-none mb-6 tracking-wider">OWNED SLUTS<br>GALLERY</h2>
+        <p class="text-2xl text-gray-200 drop-shadow-md">Tag it. Like it. Claim it.</p>
+      </div>
+    </section>
+
+    <!-- SEARCH & FILTER -->
+    <div class="max-w-screen-2xl mx-auto px-8 py-6 border-b border-purple-900">
+      <input id="searchInput" type="text" placeholder="Search tags or description (e.g. anal, public, collar)..."
+             class="w-full bg-zinc-900 border border-purple-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-purple-500 text-white">
+    </div>
+
+    <!-- GALLERY -->
+    <div class="max-w-screen-2xl mx-auto px-8 py-12">
+      <h3 class="text-4xl font-bold mb-8 flex items-center gap-3">
+        Public Gallery
+        <span id="resultCount" class="text-sm font-normal text-purple-400"></span>
+      </h3>
+      <div id="gallery" class="gallery-grid"></div>
+      <div class="flex justify-center gap-4 mt-12" id="pagination"></div>
+    </div>
+  </div>
+
+  <!-- UPLOAD MODAL -->
+  <div id="uploadModal" class="hidden fixed inset-0 bg-black/95 z-[100] items-center justify-center">
+    <div class="bg-zinc-900 rounded-3xl w-full max-w-lg mx-4 p-8 border border-purple-900/50">
+      <h2 class="text-3xl font-bold mb-6 text-purple-400">Upload Propaganda</h2>
+      <form id="uploadForm">
+        <input type="file" id="modalFile" accept="image/*,video/*" class="w-full bg-zinc-800 border border-purple-600 rounded-2xl p-4 mb-6 text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700">
+        <textarea id="modalDesc" rows="3" class="w-full bg-zinc-800 border border-purple-600 rounded-2xl p-4 mb-6 text-white focus:outline-none focus:ring-1 focus:ring-purple-500" placeholder="Description..."></textarea>
+        <input type="text" id="modalFormTags" class="w-full bg-zinc-800 border border-purple-600 rounded-2xl p-4 mb-6 text-white focus:outline-none focus:ring-1 focus:ring-purple-500" placeholder="Tags (comma separated) e.g. anal, leash, public">
+        <div class="flex gap-4 mb-6">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="visibility" value="public" checked class="accent-purple-600">
+            <span>Public</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="visibility" value="restricted" class="accent-purple-600">
+            <span>Restricted (private)</span>
+          </label>
+        </div>
+        <div class="flex gap-4">
+          <button type="button" onclick="hideUploadModal()" class="flex-1 py-4 border border-gray-600 rounded-2xl hover:bg-zinc-800 transition cursor-pointer">Cancel</button>
+          <button type="submit" class="flex-1 py-4 bg-gradient-to-r from-purple-600 to-amber-500 text-black font-bold rounded-2xl hover:opacity-90 transition cursor-pointer">Upload</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- POST DETAIL MODAL -->
+  <div id="postModal" class="hidden fixed inset-0 bg-black/95 z-[150] items-center justify-center overflow-y-auto p-4">
+    <div class="bg-zinc-900 rounded-3xl w-full max-w-3xl my-8 border border-purple-900/40">
+      <div class="p-6 border-b border-purple-900 flex justify-between items-center">
+        <h3 class="text-xl font-bold" id="modalTitle">Post Container</h3>
+        <div class="flex items-center gap-4">
+          <button onclick="deletePost()" class="text-red-500 hover:text-red-600 transition cursor-pointer">
+            <i class="fa-solid fa-trash text-xl"></i>
+          </button>
+          <button onclick="closePostModal()" class="text-3xl hover:text-red-500 font-semibold cursor-pointer transition">×</button>
+        </div>
+      </div>
+     
+      <div id="modalMedia" class="p-6 flex justify-center bg-black/40"></div>
+      <div class="p-6 border-t border-purple-900">
+        <div class="flex gap-6 text-2xl mb-6">
+          <button onclick="toggleLike()" id="likeBtn" class="flex items-center gap-2 hover:text-red-500 transition cursor-pointer">
+            <i class="fa-solid fa-heart text-red-500"></i> <span id="likeCount">0</span>
+          </button>
+          <button onclick="toggleFavorite()" id="favBtn" class="flex items-center gap-2 hover:text-yellow-400 transition cursor-pointer">
+            <i id="favIcon" class="fa-solid fa-star"></i>
+          </button>
+        </div>
+        <div class="mb-6">
+          <p class="text-purple-400 text-sm mb-2 font-semibold">TAGS</p>
+          <div id="modalTagsContainer" class="flex flex-wrap gap-2"></div>
+        </div>
+        <div>
+          <p class="text-purple-400 text-sm mb-3 font-semibold">COMMENTS</p>
+          <div id="commentsSection" class="max-h-60 overflow-y-auto space-y-4 mb-6 pr-2"></div>
+         
+          <div class="flex gap-3">
+            <input id="commentInput" type="text" placeholder="Write a comment..."
+                   class="flex-1 bg-zinc-800 border border-purple-700 rounded-2xl px-5 py-3 focus:outline-none focus:border-purple-500 text-white">
+            <button onclick="addComment()" class="px-8 bg-purple-600 hover:bg-purple-500 rounded-2xl font-bold transition cursor-pointer">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="adminPanel" class="hidden fixed inset-0 bg-black/95 z-[300] overflow-auto p-8">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-4xl font-black text-red-500">🔐 ADMIN CONTROL PANEL</h2>
+        <button onclick="hideAdminPanel()" class="text-5xl hover:text-red-500 transition">×</button>
+      </div>
+      <div class="bg-zinc-900 rounded-3xl p-8 border border-red-900/50">
+        <h3 class="text-xl mb-6 text-red-400">All Uploaded Content</h3>
+        <div id="adminGallery" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== AUTH SYSTEM ====================
+    let currentUser = null;
+    const ADMIN_CREDENTIALS = { username: "admin", password: "masterjiro" };
+
+    function login() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+        currentUser = { role: 'admin', username: 'admin' };
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        document.getElementById('loginModal').classList.add('hidden');
+        document.getElementById('roleModal').classList.remove('hidden');
+        document.getElementById('adminBtn').classList.remove('hidden');
+      } else if (username && password) {
+        currentUser = { role: 'sub', username: username };
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        document.getElementById('loginModal').classList.add('hidden');
+        document.getElementById('roleModal').classList.remove('hidden');
+      } else {
+        alert("Please enter username and password");
+      }
+    }
+
+    function logout() {
+      if (confirm("Logout from Master Jiro's domain?")) {
+        localStorage.removeItem('currentUser');
+        location.reload();
+      }
+    }
+
+    function checkAuth() {
+      const savedUser = localStorage.getItem('currentUser');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        document.getElementById('loginModal').classList.add('hidden');
+        document.getElementById('roleModal').classList.remove('hidden');
+        if (currentUser.role === 'admin') {
+          document.getElementById('adminBtn').classList.remove('hidden');
+        }
+      }
+    }
+
+    // ==================== ADMIN FUNCTIONS ====================
+    function showAdminPanel() {
+      if (currentUser?.role !== 'admin') {
+        alert("Access Denied. Admin only.");
+        return;
+      }
+      document.getElementById('adminPanel').classList.remove('hidden');
+      renderAdminGallery();
+    }
+
+    function hideAdminPanel() {
+      document.getElementById('adminPanel').classList.add('hidden');
+    }
+
+    function renderAdminGallery() {
+      const container = document.getElementById('adminGallery');
+      container.innerHTML = '';
+
+      uploads.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = "bg-zinc-800 rounded-2xl overflow-hidden border border-red-900/30";
+        div.innerHTML = `
+          <div class="relative">
+            ${item.type.startsWith('image') 
+              ? `<img src="${item.url}" class="w-full h-48 object-cover">` 
+              : `<video src="${item.url}" class="w-full h-48 object-cover" muted></video>`}
+            <button onclick="adminDeletePost(${index}); event.stopImmediatePropagation()" 
+                    class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+          <div class="p-4">
+            <p class="text-sm text-gray-300 line-clamp-2">${item.desc || 'No description'}</p>
+            <p class="text-xs text-purple-400 mt-2">Uploaded by: ${item.uploader || 'Anonymous'}</p>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function adminDeletePost(index) {
+      if (!confirm("Delete this post permanently?")) return;
+      uploads.splice(index, 1);
+      localStorage.setItem('galleryUploads', JSON.stringify(uploads));
+      renderAdminGallery();
+      renderGallery();
+    }
+
+    // ==================== ORIGINAL CODE CONTINUES ====================
+    let uploads = JSON.parse(localStorage.getItem('galleryUploads')) || [];
+    let currentPostIndex = null;
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    let viewingFavorites = false;
+    const itemsPerPage = 20;
+
+    function selectRole(role) {
+      if (role === 'sub') {
+        document.getElementById('roleModal').classList.add('hidden');
+        document.getElementById('mainSite').classList.remove('hidden');
+        renderGallery();
+      } else {
+        document.getElementById('roleModal').classList.add('hidden');
+        document.getElementById('domRejection').classList.remove('hidden');
+      }
+    }
+
+    function backToRole() {
+      document.getElementById('domRejection').classList.add('hidden');
+      document.getElementById('roleModal').classList.remove('hidden');
+    }
+
+    function showUploadModal() {
+      document.getElementById('uploadModal').classList.remove('hidden');
+      document.getElementById('uploadModal').classList.add('flex');
+    }
+
+    function hideUploadModal() {
+      document.getElementById('uploadModal').classList.add('hidden');
+      document.getElementById('uploadModal').classList.remove('flex');
+    }
+
+    function showFavorites() {
+      viewingFavorites = !viewingFavorites;
+      const favBtn = document.querySelector('[onclick="showFavorites()"]');
+      if (viewingFavorites) {
+        favBtn.classList.add('bg-purple-900', 'border', 'border-purple-500');
+      } else {
+        favBtn.classList.remove('bg-purple-900', 'border', 'border-purple-500');
+      }
+      renderGallery(1);
+    }
+
+    function deletePost(index = null) {
+      const targetIndex = index !== null ? index : currentPostIndex;
+      if (targetIndex === null) return;
+
+      if (!confirm("Delete this post permanently? This action cannot be undone.")) return;
+
+      favorites = favorites.filter(i => i !== targetIndex);
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+
+      uploads.splice(targetIndex, 1);
+      localStorage.setItem('galleryUploads', JSON.stringify(uploads));
+
+      if (index === null) closePostModal();
+      renderGallery(1);
+      alert("Post deleted successfully.");
+    }
+
+    function renderGallery(page = 1) {
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      let items = uploads;
+      if (viewingFavorites) {
+        items = items.filter((_, i) => favorites.includes(i));
+      }
+      if (searchTerm) {
+        items = items.filter(item =>
+          (item.tags && item.tags.some(tag => tag.toLowerCase().includes(searchTerm))) ||
+          (item.desc && item.desc.toLowerCase().includes(searchTerm))
+        );
+      }
+
+      document.getElementById('resultCount').textContent = `${items.length} posts`;
+
+      if (items.length === 0) {
+        gallery.innerHTML = `<p class="text-gray-500 col-span-full text-center py-12">No media found matching the criteria.</p>`;
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageItems = items.slice(start, end);
+
+      pageItems.forEach((item) => {
+        const originalIndex = uploads.indexOf(item);
+        const card = document.createElement('div');
+        card.className = "bg-zinc-900 rounded-3xl overflow-hidden border border-purple-900/30 cursor-pointer hover:border-purple-500 transition flex flex-col justify-between relative group";
+
+        let mediaHTML = item.type.startsWith('image')
+          ? `<img src="${item.url}" class="w-full h-64 object-cover">`
+          : `<video src="${item.url}" class="w-full h-64 object-cover" muted></video>`;
+
+        card.innerHTML = `
+          ${mediaHTML}
+          <button onclick="event.stopImmediatePropagation(); deletePost(${originalIndex});" 
+                  class="delete-btn absolute top-3 right-3 bg-black/70 hover:bg-red-600 text-white p-2 rounded-full transition">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+          
+          <div class="p-4 flex-grow flex flex-col justify-between bg-zinc-950/20">
+            <p class="text-gray-300 text-sm line-clamp-2 mb-3">${item.desc || 'No description'}</p>
+            <div class="flex justify-between items-center text-sm pt-2 border-t border-purple-950/50">
+              <div class="flex flex-wrap gap-1 max-w-[70%]">
+                ${(item.tags || []).slice(0, 2).map(tag => `<span class="tag">${tag}</span>`).join('')}
+                ${(item.tags || []).length > 2 ? '<span class="text-xs text-purple-400 self-center">...</span>' : ''}
+              </div>
+              <div class="flex gap-3 text-gray-400">
+                <span class="flex items-center gap-1"><i class="fa-solid fa-heart text-red-500"></i> ${item.likes || 0}</span>
+                ${favorites.includes(originalIndex) ? '<i class="fa-solid fa-star text-yellow-400"></i>' : ''}
+              </div>
+            </div>
+          </div>
+        `;
+
+        card.onclick = (e) => {
+          if (!e.target.closest('.delete-btn')) {
+            openPostModal(originalIndex);
+          }
+        };
+        gallery.appendChild(card);
+      });
+
+      renderPagination(page, items.length);
+    }
+
+    function renderPagination(currentPage, totalItems) {
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+      if (totalPages <= 1) return;
+
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.className = `px-5 py-2 rounded-full font-semibold transition cursor-pointer ${i === currentPage ? 'bg-purple-600 text-white' : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700 hover:text-white'}`;
+        btn.textContent = i;
+        btn.onclick = () => renderGallery(i);
+        pagination.appendChild(btn);
+      }
+    }
+
+    function openPostModal(index) {
+      currentPostIndex = index;
+      const item = uploads[index];
+     
+      document.getElementById('postModal').classList.remove('hidden');
+      document.getElementById('postModal').classList.add('flex');
+      document.getElementById('modalTitle').textContent = item.desc ? item.desc.substring(0, 30) + (item.desc.length > 30 ? '...' : '') : 'Post View';
+      
+      let mediaHTML = item.type.startsWith('image')
+        ? `<img src="${item.url}" class="max-w-full max-h-[50vh] rounded-2xl object-contain">`
+        : `<video src="${item.url}" controls class="max-w-full max-h-[50vh] rounded-2xl"></video>`;
+      
+      document.getElementById('modalMedia').innerHTML = mediaHTML;
+
+      const tagsContainer = document.getElementById('modalTagsContainer');
+      tagsContainer.innerHTML = (item.tags || []).length > 0
+        ? (item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')
+        : `<span class="text-sm text-gray-500">No tags listed</span>`;
+
+      document.getElementById('likeCount').textContent = item.likes || 0;
+      const favIcon = document.getElementById('favIcon');
+      favIcon.className = favorites.includes(index)
+        ? "fa-solid fa-star text-yellow-400"
+        : "fa-solid fa-star text-gray-500";
+
+      renderComments();
+    }
+
+    function closePostModal() {
+      document.getElementById('postModal').classList.add('hidden');
+      document.getElementById('postModal').classList.remove('flex');
+      renderGallery();
+    }
+
+    function toggleLike() {
+      if (currentPostIndex === null) return;
+      uploads[currentPostIndex].likes = (uploads[currentPostIndex].likes || 0) + 1;
+      localStorage.setItem('galleryUploads', JSON.stringify(uploads));
+      document.getElementById('likeCount').textContent = uploads[currentPostIndex].likes;
+    }
+
+    function toggleFavorite() {
+      if (currentPostIndex === null) return;
+      const favIcon = document.getElementById('favIcon');
+      if (favorites.includes(currentPostIndex)) {
+        favorites = favorites.filter(i => i !== currentPostIndex);
+        favIcon.className = "fa-solid fa-star text-gray-500";
+      } else {
+        favorites.push(currentPostIndex);
+        favIcon.className = "fa-solid fa-star text-yellow-400";
+      }
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+
+    function renderComments() {
+      const container = document.getElementById('commentsSection');
+      const item = uploads[currentPostIndex];
+      container.innerHTML = '';
+      if (!item.comments || item.comments.length === 0) {
+        container.innerHTML = `<p class="text-gray-500 text-sm italic">No comments yet. Be the first to claim it...</p>`;
+        return;
+      }
+      item.comments.forEach(comment => {
+        const div = document.createElement('div');
+        div.className = "bg-zinc-800/60 p-4 rounded-2xl border border-zinc-700/30";
+        div.innerHTML = `<p class="text-sm text-gray-200"><span class="text-purple-400 font-bold">@sub</span>: ${comment}</p>`;
+        container.appendChild(div);
+      });
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function addComment() {
+      const input = document.getElementById('commentInput');
+      const value = input.value.trim();
+      if (!value || currentPostIndex === null) return;
+      if (!uploads[currentPostIndex].comments) uploads[currentPostIndex].comments = [];
+      uploads[currentPostIndex].comments.push(value);
+      localStorage.setItem('galleryUploads', JSON.stringify(uploads));
+      input.value = '';
+      renderComments();
+    }
+
+    // Upload handler
+    document.getElementById('uploadForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('modalFile');
+      const desc = document.getElementById('modalDesc').value;
+      const tagsInput = document.getElementById('modalFormTags').value;
+      const visibility = document.querySelector('input[name="visibility"]:checked').value;
+
+      if (!fileInput.files[0]) return alert("Select a file first");
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(Boolean) : [];
+        const newUpload = {
+          url: event.target.result,
+          type: file.type,
+          desc: desc || '',
+          tags: tags,
+          visibility: visibility,
+          likes: 0,
+          comments: [],
+          uploader: currentUser?.username || 'Anonymous',
+          timestamp: new Date().toISOString()
+        };
+        uploads.unshift(newUpload);
+        localStorage.setItem('galleryUploads', JSON.stringify(uploads));
+        hideUploadModal();
+        this.reset();
+        renderGallery(1);
+        alert("✅ Uploaded successfully!");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('searchInput').addEventListener('input', () => renderGallery(1));
+
+    // Initialize
+    window.onload = () => {
+      checkAuth();
+      renderGallery();
+    };
+  </script>
+</body>
+</html>
